@@ -50,6 +50,7 @@ class Game extends React.Component {
             }],
             stepNumber: 0,
             xIsNext: true,
+            listIsDesc: false,
         };
     }
 
@@ -78,12 +79,25 @@ class Game extends React.Component {
         });
     }
 
+    handleChange(){
+        this.setState({
+            listIsDesc: !this.state.listIsDesc,
+        })
+    }
+
     render() {
-        const history = this.state.history;
+        let history = this.state.history;
         const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
 
-        const moves = history.map((step, move) => {
+        if(this.state.listIsDesc){
+            history = history.map(item => item).reverse();
+        }
+
+        const moves = history.map((step, move, array) => {
+            if(this.state.listIsDesc){
+                move = array.length - move - 1;
+            }
             let desc = move ?
                 `Go to move (${step.location})` :
                 'Go to game start';
@@ -114,6 +128,7 @@ class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <input type="checkbox" onChange={() => this.handleChange()} />Descending
                     <ol>{moves}</ol>
                 </div>
             </div>
